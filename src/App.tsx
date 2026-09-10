@@ -79,9 +79,14 @@ export const App: React.FC = () => {
           setLastVerdict(verdict);
           soundManager.playGavel();
 
+          let activeGrid = currentGrid;
+          let activeSize = size;
+
           if (verdict.status === 'SUSTAINED') {
             const mutResult = applyMutation(currentGrid, verdict.mutation, size);
-            setGrid(mutResult.newGrid);
+            activeGrid = mutResult.newGrid;
+            activeSize = mutResult.newSize;
+            setGrid(activeGrid);
             if (mutResult.newSize !== size) {
               setBoardSize(mutResult.newSize);
             }
@@ -90,8 +95,8 @@ export const App: React.FC = () => {
             setHistoryLog(prev => [...prev, `Bot Objection OVERRULED by Arbiter.`]);
           }
 
-          // Continue bot regular move
-          executeBotMove(currentGrid, size);
+          // Continue bot regular move with mutated grid and size
+          executeBotMove(activeGrid, activeSize);
         }, 1200);
       } else {
         executeBotMove(currentGrid, size);
