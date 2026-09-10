@@ -153,53 +153,22 @@ npm run build
 
 ---
 
-## 📂 Repository Architecture
+## 👤 Author
 
-```
-PromptCourt/
-├── AGENTS.md                 # Repository constitution & engineering standards
-├── CLAUDE.md                 # CLI commands and developer cheatsheet
-├── ROADMAP.md                # Phase-by-phase execution tracking
-├── CONTRIBUTING.md           # Contribution guidelines & PR hygiene
-├── LICENSE                   # MIT License
-├── README.md                 # Master documentation & visual guide
-├── SPECIFICATION.md          # Comprehensive PRD & tool-calling schema
-├── vercel.json               # 1-Click Vercel cloud deployment config
-├── index.html                # 2026 Light theme shell with Tailwind CDN
-├── package.json              # Zero-dependency streamlined bundle
-├── tsconfig.json             # Strict TypeScript configuration
-├── vite.config.ts            # Vite 6 build configuration
-├── tests/                    # Automated unit test suite (Node test runner)
-│   ├── gameRules.test.mjs    # Deterministic win/loss/draw test suite
-│   ├── mockArbiter.test.mjs  # AI Arbiter structured output & prompt tests
-│   └── mutations.test.mjs    # Board transformation & expansion tests
-└── src/
-    ├── main.tsx              # React 18 DOM mount point
-    ├── App.tsx               # Master game state orchestrator & sudden death loop
-    ├── index.css             # Light modern styling tokens & scrollbars
-    ├── ai/
-    │   ├── schemas.ts        # Quick-action chips & JSON output contracts
-    │   ├── mockArbiter.ts    # Zero-latency offline Arbiter (30+ witty rulings)
-    │   ├── geminiArbiter.ts  # BYOK Google Gemini client
-    │   └── adversaryBot.ts   # Bot move calculator & rebuttal generator
-    ├── components/
-    │   ├── Navbar.tsx        # Top navigation & mode switcher (PvE / PvP / Arena)
-    │   ├── Board.tsx         # Dynamic 3x3 / 4x4 animated grid with frost overlays
-    │   ├── TokenCounter.tsx  # Golden Gavel token counters & objection triggers
-    │   ├── CourtroomModal.tsx# Plain-English objection & rebuttal modal
-    │   ├── ArbiterHUD.tsx    # Referee banner, gavel animations & docket log
-    │   ├── SettingsModal.tsx # Sound FX toggle & BYOK API key storage
-    │   └── VerdictShareCard.tsx # Post-match scorecard for social sharing
-    └── engine/
-        ├── types.ts          # Pure TypeScript game & mutation definitions
-        ├── gameRules.ts      # Pure board evaluators & Minimax heuristics
-        ├── mutations.ts      # Board mutators (swap, freeze, expand, extra turn)
-        ├── sounds.ts         # Procedural Web Audio API sound synthesizer
-        └── confetti.ts       # Procedural canvas confetti engine
-```
+**Harshit Agarwal**  
+*AI Product Manager & 0-to-1 Systems Builder*  
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-181717?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/1997agarwal)
+[![X](https://img.shields.io/badge/X-Follow_%401997agarwal-181717?style=flat-square&logo=x&logoColor=white)](https://x.com/1997agarwal)
+[![GitHub](https://img.shields.io/badge/GitHub-Explore_Repos-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/1997agarwal)
+[![Email](https://img.shields.io/badge/Email-Get_in_Touch-181717?style=flat-square&logo=gmail&logoColor=white)](mailto:agarwal.harshit97@gmail.com)
+
+- **GitHub:** [@1997agarwal](https://github.com/1997agarwal)  
+- **LinkedIn:** [1997agarwal](https://www.linkedin.com/in/1997agarwal)  
+- **X (Twitter):** [@1997agarwal](https://x.com/1997agarwal)  
 
 ---
 
-## 📜 License
+## 📄 License
 
-MIT © [Harshit Agarwal](https://github.com/1997agarwal)
+This project is licensed under the [MIT License](LICENSE).
