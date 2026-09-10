@@ -104,6 +104,26 @@ export const App: React.FC = () => {
     }, 600);
   }, [winner, apiKey]);
 
+  const triggerSuddenDeath = (currentGrid: BoardType) => {
+    soundManager.playGavel();
+    const mutResult = applyMutation(currentGrid, { type: "EXPAND" }, 3);
+    setGrid(mutResult.newGrid);
+    setBoardSize(4);
+    setTokens(prev => ({ X: prev.X + 1, O: prev.O + 1 }));
+    setLastVerdict({
+      status: "SUSTAINED",
+      score: 20,
+      rulingTitle: "SUDDEN DEATH: DRAW FORBIDDEN!",
+      reasoning: "The Supreme Court rejects stalemates. Expanding territory to 4x4 + 1 Bonus Objection Token awarded!",
+      dialogue: "A draw is a waste of everyone's time! I hereby invoke the Sudden Death Protocol: The board expands to a 4x4 Grid. First to 4-in-a-row takes the crown!",
+      mutation: { type: "EXPAND" }
+    });
+    setHistoryLog(prev => [
+      ...prev,
+      "⚖️ SUDDEN DEATH ACTIVATED: Stalemate rejected! Board expanded to 4x4 with 4-in-a-row win condition!"
+    ]);
+  };
+
   const executeBotMove = (currentGrid: BoardType, size: number) => {
     const [r, c] = findBestMove(currentGrid, 'O', size);
     if (currentGrid[r]?.[c] && !currentGrid[r][c].player && !currentGrid[r][c].isBlocked) {
@@ -114,6 +134,11 @@ export const App: React.FC = () => {
       setHistoryLog(prev => [...prev, `Bot placed O on [${r + 1},${c + 1}].`]);
 
       const outcome = checkWinner(updatedGrid, size);
+      if (outcome.winner === "DRAW" && size === 3) {
+        triggerSuddenDeath(updatedGrid);
+        setCurrentPlayer("X");
+        return;
+      }
       if (outcome.winner) {
         setWinner(outcome.winner);
         setWinningLine(outcome.line);
@@ -141,6 +166,15 @@ export const App: React.FC = () => {
     setHistoryLog(prev => [...prev, logEntry]);
 
     const outcome = checkWinner(updatedGrid, boardSize);
+    if (outcome.winner === "DRAW" && boardSize === 3) {
+      triggerSuddenDeath(updatedGrid);
+      const nextPlayer: Player = currentPlayer === "X" ? "O" : "X";
+      setCurrentPlayer(nextPlayer);
+      if (mode === "PVE" && nextPlayer === "O") {
+        setTimeout(() => executeBotMove(applyMutation(updatedGrid, { type: "EXPAND" }, 3).newGrid, 4), 800);
+      }
+      return;
+    }
     if (outcome.winner) {
       setWinner(outcome.winner);
       setWinningLine(outcome.line);
