@@ -1,0 +1,25 @@
+{
+  "name": "promptcourt",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "The AI-native strategy arena where players use plain-English persuasion to convince an autonomous AI Arbiter to bend the rules.",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.1.0"
+  }
+}
