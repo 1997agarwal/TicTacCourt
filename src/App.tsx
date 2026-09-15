@@ -8,12 +8,13 @@ import { CourtroomModal } from './components/CourtroomModal';
 import { SettingsModal } from './components/SettingsModal';
 import { VerdictShareCard } from './components/VerdictShareCard';
 
-import { Board as BoardType, Player, GameMode, ArbiterVerdict } from './engine/types';
+import { Board as BoardType, Player, GameMode, ArbiterVerdict, ArbiterPresetId } from './engine/types';
 import { createEmptyBoard, checkWinner, findBestMove, getAvailableCells } from './engine/gameRules';
 import { applyMutation, decrementFrozenCells } from './engine/mutations';
 import { soundManager } from './engine/sounds';
 import { evaluateWithGemini } from './ai/geminiArbiter';
 import { getBotRebuttal, getBotObjection } from './ai/adversaryBot';
+import { ARBITER_PRESETS } from './ai/schemas';
 
 export const App: React.FC = () => {
   const [boardSize, setBoardSize] = useState<number>(3);
@@ -33,6 +34,9 @@ export const App: React.FC = () => {
   const [isShareCardOpen, setIsShareCardOpen] = useState(false);
   const [isDeliberating, setIsDeliberating] = useState(false);
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('tictaccourt_gemini_key') || '');
+  const [arbiterPreset, setArbiterPreset] = useState<ArbiterPresetId>(
+    () => (localStorage.getItem('tictaccourt_arbiter_preset') as ArbiterPresetId) || 'strict'
+  );
 
   const resetMatch = useCallback((size: number = 3) => {
     setBoardSize(size);
@@ -50,6 +54,16 @@ export const App: React.FC = () => {
   const handleSaveApiKey = (key: string) => {
     setApiKey(key);
     localStorage.setItem('tictaccourt_gemini_key', key);
+  };
+
+  const handleSelectArbiterPreset = (preset: ArbiterPresetId) => {
+    setArbiterPreset(preset);
+    localStorage.setItem('tictaccourt_arbiter_preset', preset);
+    const p = ARBITER_PRESETS[preset] || ARBITER_PRESETS.strict;
+    setHistoryLog(prev => [
+      ...prev,
+      `⚖️ Presiding Judge changed to ${p.emoji} ${p.name} (Threshold: ≥${p.threshold}/20).`
+    ]);
   };
 
   // Bot Turn Handler in PvE
@@ -72,7 +86,8 @@ export const App: React.FC = () => {
             botObj.chip,
             currentGrid,
             'O',
-            size
+            size,
+            arbiterPreset
           );
 
           setIsDeliberating(false);
@@ -102,7 +117,7 @@ export const App: React.FC = () => {
         executeBotMove(currentGrid, size);
       }
     }, 600);
-  }, [winner, apiKey]);
+  }, [winner, apiKey, arbiterPreset]);
 
   const triggerSuddenDeath = (currentGrid: BoardType) => {
     soundManager.playGavel();
@@ -226,7 +241,8 @@ export const App: React.FC = () => {
         actionChip,
         grid,
         currentPlayer,
-        boardSize
+        boardSize,
+        arbiterPreset
       );
 
       setLastVerdict(verdict);
@@ -293,6 +309,8 @@ export const App: React.FC = () => {
         }}
         onResetMatch={() => resetMatch(boardSize)}
         onOpenSettings={() => setIsSettingsOpen(true)}
+        arbiterPreset={arbiterPreset}
+        onSelectArbiterPreset={handleSelectArbiterPreset}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-8 w-full flex flex-col gap-6">
@@ -335,6 +353,7 @@ export const App: React.FC = () => {
               lastVerdict={lastVerdict}
               isDeliberating={isDeliberating}
               historyLog={historyLog}
+              arbiterPreset={arbiterPreset}
             />
           </div>
         </div>
@@ -360,6 +379,8 @@ export const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         apiKey={apiKey}
         onSaveApiKey={handleSaveApiKey}
+        arbiterPreset={arbiterPreset}
+        onSelectArbiterPreset={handleSelectArbiterPreset}
       />
 
       <VerdictShareCard

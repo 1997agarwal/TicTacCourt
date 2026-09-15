@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
-import { X, Key, Sparkles, Volume2, VolumeX, ShieldCheck } from 'lucide-react';
+import { X, Key, Volume2, VolumeX, ShieldCheck, Check, Sparkles } from 'lucide-react';
 import { soundManager } from '../engine/sounds';
+import { ArbiterPresetId } from '../engine/types';
+import { ARBITER_PRESETS } from '../ai/schemas';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   apiKey: string;
   onSaveApiKey: (key: string) => void;
+  arbiterPreset: ArbiterPresetId;
+  onSelectArbiterPreset: (preset: ArbiterPresetId) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -14,8 +18,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   apiKey,
   onSaveApiKey,
+  arbiterPreset,
+  onSelectArbiterPreset,
 }) => {
   const [localKey, setLocalKey] = useState(apiKey);
+  const [localPreset, setLocalPreset] = useState<ArbiterPresetId>(arbiterPreset);
   const [isMuted, setIsMuted] = useState(soundManager.getMuted());
 
   if (!isOpen) return null;
@@ -23,6 +30,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     onSaveApiKey(localKey);
+    onSelectArbiterPreset(localPreset);
     onClose();
   };
 
@@ -34,9 +42,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-zinc-200 relative">
-        <div className="flex items-center justify-between pb-4 border-b border-zinc-100">
-          <h3 className="font-bold text-slate-900 text-base">Courtroom & AI Settings</h3>
+      <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-zinc-200 relative max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between pb-4 border-b border-zinc-100 sticky top-0 bg-white z-10">
+          <div>
+            <h3 className="font-bold text-slate-900 text-base">Courtroom & Arbiter Settings</h3>
+            <p className="text-xs text-slate-500">Configure judicial personality and game engine</p>
+          </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-zinc-100 transition-all"
@@ -45,7 +56,60 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
         </div>
 
-        <form onSubmit={handleSave} className="mt-4 space-y-4">
+        <form onSubmit={handleSave} className="mt-4 space-y-5">
+          {/* Arbiter Personality Presets */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                AI Arbiter Personality Preset
+              </label>
+              <span className="text-[11px] text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                Dynamic Prompt & Scoring
+              </span>
+            </div>
+            <div className="space-y-2.5">
+              {(Object.keys(ARBITER_PRESETS) as ArbiterPresetId[]).map(key => {
+                const preset = ARBITER_PRESETS[key];
+                const isSelected = localPreset === key;
+                return (
+                  <div
+                    key={key}
+                    onClick={() => setLocalPreset(key)}
+                    className={`p-3 rounded-2xl cursor-pointer transition-all border text-left ${
+                      isSelected
+                        ? 'border-amber-500 bg-amber-50/50 shadow-sm ring-1 ring-amber-400/40'
+                        : 'border-zinc-200 bg-zinc-50/60 hover:bg-zinc-100/80 hover:border-zinc-300'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-2xl leading-none">{preset.emoji}</span>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                            <span>{preset.name}</span>
+                            <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${preset.badgeBg}`}>
+                              Threshold: ≥{preset.threshold}/20
+                            </span>
+                          </div>
+                          <div className="text-[11px] font-medium text-slate-600 mt-0.5">{preset.tagline}</div>
+                        </div>
+                      </div>
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+                        isSelected ? 'bg-amber-500 text-white' : 'border border-zinc-300'
+                      }`}>
+                        {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      </div>
+                    </div>
+                    <p className="text-[11px] text-slate-500 mt-2 pl-9 leading-relaxed border-t border-zinc-100 pt-1.5">
+                      {preset.description}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Sound FX Toggle */}
           <div className="flex items-center justify-between p-3.5 rounded-2xl bg-zinc-50 border border-zinc-200">
             <div className="flex items-center gap-2.5">
@@ -88,7 +152,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Buttons */}
-          <div className="pt-2 flex items-center justify-end gap-3">
+          <div className="pt-2 flex items-center justify-end gap-3 sticky bottom-0 bg-white py-2 border-t border-zinc-100">
             <button
               type="button"
               onClick={onClose}
@@ -108,3 +172,4 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     </div>
   );
 };
+

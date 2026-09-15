@@ -1,37 +1,42 @@
 import React from 'react';
-import { Gavel, CheckCircle2, XCircle, Sparkles, Scale } from 'lucide-react';
-import { ArbiterVerdict } from '../engine/types';
+import { Gavel, CheckCircle2, XCircle, Scale } from 'lucide-react';
+import { ArbiterPresetId, ArbiterVerdict } from '../engine/types';
+import { ARBITER_PRESETS } from '../ai/schemas';
 
 interface ArbiterHUDProps {
   lastVerdict: ArbiterVerdict | null;
   isDeliberating: boolean;
   historyLog: string[];
+  arbiterPreset?: ArbiterPresetId;
 }
 
 export const ArbiterHUD: React.FC<ArbiterHUDProps> = ({
   lastVerdict,
   isDeliberating,
   historyLog,
+  arbiterPreset = 'strict',
 }) => {
+  const currentPreset = ARBITER_PRESETS[arbiterPreset] || ARBITER_PRESETS.strict;
+
   return (
     <div className="w-full bg-white rounded-3xl border border-zinc-200 shadow-sm p-5 transition-all">
       {/* Arbiter Identity Header */}
       <div className="flex items-center justify-between border-b border-zinc-100 pb-3.5">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 text-white flex items-center justify-center text-xl shadow-md shadow-amber-500/20 font-black">
-              ⚖️
+            <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${currentPreset.color} text-white flex items-center justify-center text-xl shadow-md font-black`}>
+              {currentPreset.emoji}
             </div>
             <span className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h4 className="font-bold text-slate-900 text-sm sm:text-base">The AI Arbiter</h4>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-700">
-                Supreme Ref
+              <h4 className="font-bold text-slate-900 text-sm sm:text-base">{currentPreset.name}</h4>
+              <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${currentPreset.badgeBg}`}>
+                ≥{currentPreset.threshold}/20
               </span>
             </div>
-            <p className="text-xs text-slate-500">Autonomous Judicial Engine • Plain English Jurisprudence</p>
+            <p className="text-xs text-slate-500">{currentPreset.tagline}</p>
           </div>
         </div>
 

@@ -5,6 +5,10 @@
 </p>
 
 <p align="center">
+  <a href="https://1997agarwal.github.io/TicTacCourt"><img src="https://img.shields.io/badge/▶_Play_Live_Demo-TicTacCourt-FF5722?style=for-the-badge&logo=githubpages&logoColor=white" alt="Play Live Demo"></a>
+</p>
+
+<p align="center">
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT"></a>
   <a href="#the-zero-draw-guarantee"><img src="https://img.shields.io/badge/Draws-100%25_Eliminated-emerald.svg" alt="Zero Draws"></a>
   <a href="#system-architecture"><img src="https://img.shields.io/badge/Architecture-Autonomous_Tool_Calling-orange.svg" alt="Tool Calling Architecture"></a>
@@ -65,6 +69,12 @@ When the Arbiter rules an objection **SUSTAINED** (score $\ge 12/20$), it execut
 
 ### 4. 🤖 Tactical Adversary Bot with Counter-Rebuttals
 When you file an appeal in **vs AI Bot** mode, the bot doesn't sit silently—it fires back a sharp, witty rebuttal to defend its position (*"Objection Ref! They walked straight into that corner trap with both eyes open. Don't bail them out!"*). Furthermore, when the bot is in danger, it spends its own Golden Gavel tokens to appeal to the Arbiter!
+
+### 5. 🎭 3 Distinct Arbiter Personality Presets
+Switch the presiding judge anytime via the Navbar quick-select or Settings modal. Each preset dynamically steers the judicial system prompt and scoring thresholds:
+- ⚖️ **The Strict Constitutionalist:** Demands rigorous tactical and legal logic; strictly rejects silly excuses, whining, or "sneeze" claims. Imposes a high judicial threshold ($\ge 14/20$) to sustain motions.
+- 🎭 **The Chaotic Comedian:** Rewards humor, witty rhymes, memes, and sharp trash talk. Overrules dry, boring textbook arguments as snoozefests. Lower bar to sustain ($\ge 11/20$) for hilarious arguments.
+- 🤝 **The Merciful Ref:** Deeply compassionate playground arbiter who roots for the underdog. Dynamically inspects the board; grants bonus points, extra moves, and swaps when a player is on the brink of defeat ($\ge 10/20$ threshold for trailing players).
 
 ---
 

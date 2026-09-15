@@ -21,6 +21,22 @@ export interface MutationAction {
   duration?: number;
 }
 
+export type ArbiterPresetId = 'strict' | 'comedian' | 'merciful';
+
+export interface ArbiterPreset {
+  id: ArbiterPresetId;
+  name: string;
+  title: string;
+  emoji: string;
+  tagline: string;
+  description: string;
+  threshold: number;
+  color: string;
+  badgeBg: string;
+  badgeText: string;
+  systemPromptModifier: string;
+}
+
 export interface ArbiterVerdict {
   status: 'SUSTAINED' | 'OVERRULED';
   score: number;
@@ -28,6 +44,7 @@ export interface ArbiterVerdict {
   reasoning: string;
   dialogue: string;
   mutation?: MutationAction;
+  presetId?: ArbiterPresetId;
 }
 
 export type GameMode = 'PVE' | 'PVP' | 'SPECTATOR';
@@ -55,4 +72,5 @@ export interface GameState {
   history: string[];
   extraTurnsRemaining: number;
   mode: GameMode;
+  arbiterPreset?: ArbiterPresetId;
 }
