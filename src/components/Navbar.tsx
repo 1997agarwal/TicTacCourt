@@ -25,7 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-bold text-lg text-slate-900 tracking-tight">PromptCourt</span>
+              <span className="font-bold text-lg text-slate-900 tracking-tight">TicTacCourt</span>
               <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
                 AI Arena
               </span>
@@ -91,7 +91,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Settings className="w-4 h-4" />
           </button>
           <a
-            href="https://github.com/1997agarwal/PromptCourt"
+            href="https://github.com/1997agarwal/TicTacCourt"
             target="_blank"
             rel="noopener noreferrer"
             title="GitHub Repository"

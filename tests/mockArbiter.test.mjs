@@ -12,7 +12,7 @@ function evaluateMockPleaSimple(plea) {
   return { verdict: 'SUSTAINED', title: 'Creative Appeal: SUSTAINED!' };
 }
 
-describe('PromptCourt AI Arbiter', () => {
+describe('TicTacCourt AI Arbiter', () => {
   test('sustains legitimate swap plea', () => {
     const res = evaluateMockPleaSimple('Hey ref! Swap my piece because of an ambush trap!');
     assert.equal(res.verdict, 'SUSTAINED');

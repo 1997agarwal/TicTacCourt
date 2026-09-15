@@ -1,4 +1,4 @@
-# CLAUDE.md — Quick Reference for PromptCourt
+# CLAUDE.md — Quick Reference for TicTacCourt
 
 ## Commands
 - Install: `npm install`

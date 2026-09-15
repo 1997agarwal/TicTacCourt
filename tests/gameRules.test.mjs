@@ -53,7 +53,7 @@ function checkWinner(grid, size) {
   return { winner: null, line: null };
 }
 
-describe('PromptCourt Deterministic Rules', () => {
+describe('TicTacCourt Deterministic Rules', () => {
   test('creates 3x3 empty board correctly', () => {
     const b = createEmptyBoard(3);
     assert.equal(b.length, 3);

@@ -1,7 +1,7 @@
-# PromptCourt — Specification Document
+# TicTacCourt — Specification Document
 
 ## 1. Vision & Overview
-PromptCourt takes the world's most ubiquitous solved game (Tic-Tac-Toe) and transforms it into an AI-native battle of tactics and persuasion.
+TicTacCourt takes the world's most ubiquitous solved game (Tic-Tac-Toe) and transforms it into an AI-native battle of tactics and persuasion.
 
 ## 2. Technical Stack
 - Frontend: React 18, Vite, TypeScript, Tailwind CSS, Lucide Icons, Canvas Confetti.

@@ -1,13 +1,13 @@
-# Contributing to PromptCourt
+# Contributing to TicTacCourt
 
-Thank you for your interest in contributing to PromptCourt!
+Thank you for your interest in contributing to TicTacCourt!
 
 ## Development Setup
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/1997agarwal/PromptCourt.git
-   cd PromptCourt
+   git clone https://github.com/1997agarwal/TicTacCourt.git
+   cd TicTacCourt
    ```
 2. Install dependencies:
    ```bash

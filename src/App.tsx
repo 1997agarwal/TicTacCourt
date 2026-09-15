@@ -32,7 +32,7 @@ export const App: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isShareCardOpen, setIsShareCardOpen] = useState(false);
   const [isDeliberating, setIsDeliberating] = useState(false);
-  const [apiKey, setApiKey] = useState(() => localStorage.getItem('promptcourt_gemini_key') || '');
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem('tictaccourt_gemini_key') || '');
 
   const resetMatch = useCallback((size: number = 3) => {
     setBoardSize(size);
@@ -49,7 +49,7 @@ export const App: React.FC = () => {
 
   const handleSaveApiKey = (key: string) => {
     setApiKey(key);
-    localStorage.setItem('promptcourt_gemini_key', key);
+    localStorage.setItem('tictaccourt_gemini_key', key);
   };
 
   // Bot Turn Handler in PvE
@@ -342,7 +342,7 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full border-t border-zinc-200 py-4 bg-white/60 text-center text-xs text-slate-500">
-        PromptCourt • An AI-Native Open Source Game • Designed with 2026 Light Modern UI Tokens
+        TicTacCourt • An AI-Native Open Source Game • Designed with 2026 Light Modern UI Tokens
       </footer>
 
       {/* Modals */}

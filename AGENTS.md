@@ -1,13 +1,13 @@
-# AGENTS.md — Constitution of PromptCourt
+# AGENTS.md — Constitution of TicTacCourt
 
-> **Read this first.** This file is the constitution of the PromptCourt repository. It applies to every
+> **Read this first.** This file is the constitution of the TicTacCourt repository. It applies to every
 > human engineer and every AI coding assistant (AntiGravity, Claude Code, Cursor, Windsurf, Codex, Copilot).
 
 ---
 
-## 1. What PromptCourt Is
+## 1. What TicTacCourt Is
 
-**PromptCourt** is an AI-native strategy game that reinvents classic Tic-Tac-Toe into an unpredictable, high-stakes battle of **positional tactics + plain-English courtroom persuasion**.
+**TicTacCourt** is an AI-native strategy game that reinvents classic Tic-Tac-Toe into an unpredictable, high-stakes battle of **positional tactics + plain-English courtroom persuasion**.
 
 - **Classical Layer:** A deterministic grid where players take turns placing markers (X or O).
 - **Courtroom Layer:** Players spend "Objection Tokens" to file plain-English appeals to an autonomous **AI Arbiter**. The opponent can file a quick rebuttal. The Arbiter evaluates the pleas and either sustains or overrules the objection.
@@ -17,7 +17,7 @@
 
 ## 2. Codebase Isolation & Parity Rules
 
-1. **PromptCourt is an Independent Repository:** All code, docs, and assets belong strictly to `PromptCourt`.
+1. **TicTacCourt is an Independent Repository:** All code, docs, and assets belong strictly to `TicTacCourt`.
 2. **4-File Parity Standard:** Always maintain synchronized documentation across `AGENTS.md`, `README.md`, `ROADMAP.md`, and `CONTRIBUTING.md`.
 3. **Deterministic vs. Probabilistic Boundary:**
    - The game rules (win/draw checks, coordinate validation) must remain strictly deterministic, pure, and thoroughly unit tested.

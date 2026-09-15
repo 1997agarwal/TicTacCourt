@@ -1,4 +1,4 @@
-# PromptCourt ⚖️
+# TicTacCourt ⚖️
 
 <p align="center">
   <b>The AI-Native Tactical Arena Where Players Persuade an Autonomous AI Arbiter in Plain English to Bend the Rules.</b>
@@ -23,13 +23,13 @@ Out of 255,168 possible game states, two competent players will **draw 100% of t
 - **Static 9-Square Prison:** The 3×3 grid never evolves, forcing repetitive, algorithmic play.
 - **The "Tutorial Trap":** Millions of developers build the same predictable 3×3 grid project that signals zero engineering creativity.
 
-**PromptCourt** breaks the 1,000-year-old stalemate loop by transforming the game into an unpredictable battle of **positional tactics + everyday courtroom persuasion**.
+**TicTacCourt** breaks the 1,000-year-old stalemate loop by transforming the game into an unpredictable battle of **positional tactics + everyday courtroom persuasion**.
 
 ---
 
-## ⚔️ How PromptCourt is Fundamentally Different from Normal Tic-Tac-Toe
+## ⚔️ How TicTacCourt is Fundamentally Different from Normal Tic-Tac-Toe
 
-| Feature | Normal Tic-Tac-Toe | PromptCourt |
+| Feature | Normal Tic-Tac-Toe | TicTacCourt |
 |---|---|---|
 | **Match Outcome** | **100% Guaranteed Draw** between competent players. Frustrating and repetitive. | **Zero-Draw Guarantee.** Stalemates trigger an automated Sudden Death protocol until a winner is crowned. |
 | **Player Action** | Only 1 rigid choice: place an X or O on an empty square. | **Dual Action:** Place a piece OR spend an **Objection Token** to appeal directly to the AI Arbiter. |
@@ -43,7 +43,7 @@ Out of 255,168 possible game states, two competent players will **draw 100% of t
 ## 🛡️ The 4 Killer Differentiators
 
 ### 1. ⚡ The Zero-Draw Guarantee (Sudden Death Protocol)
-In PromptCourt, **draws are mathematically forbidden**:
+In TicTacCourt, **draws are mathematically forbidden**:
 - If all 9 squares fill up in 3×3 without a winner, the AI Arbiter strikes the gavel and triggers the **Sudden Death Protocol**.
 - The Arbiter awards each player **+1 Bonus Objection Token** and **expands the board into a 4×4 grid** (16 squares with a 4-in-a-row win condition).
 - The match continues seamlessly until a decisive victor is crowned.
@@ -128,8 +128,8 @@ When you file an appeal in **vs AI Bot** mode, the bot doesn't sit silently—it
 ### 1. Launch the 2026 Light Theme Studio
 ```bash
 # Clone the repository
-git clone https://github.com/1997agarwal/PromptCourt.git
-cd PromptCourt
+git clone https://github.com/1997agarwal/TicTacCourt.git
+cd TicTacCourt
 
 # Install dependencies
 npm install

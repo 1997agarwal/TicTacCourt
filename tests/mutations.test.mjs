@@ -26,7 +26,7 @@ function expandBoard(grid, currentSize) {
   return expanded;
 }
 
-describe('PromptCourt Board State Mutations', () => {
+describe('TicTacCourt Board State Mutations', () => {
   test('swaps pieces between two coordinates', () => {
     const grid = [
       [{ player: 'X' }, { player: null }],

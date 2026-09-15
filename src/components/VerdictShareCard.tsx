@@ -19,10 +19,10 @@ export const VerdictShareCard: React.FC<VerdictShareCardProps> = ({
 
   if (!isOpen || !winner) return null;
 
-  const shareText = `⚖️ I just played PromptCourt (AI-Native Tic-Tac-Toe)!
+  const shareText = `⚖️ I just played TicTacCourt (AI-Native Tic-Tac-Toe)!
 Match Result: ${winner === 'DRAW' ? 'Stalemate Draw!' : `Player ${winner} Victorious!`}
 Supreme Arbiter Ruling: "${lastVerdict?.dialogue || 'Court has concluded!'}"
-Playable open source demo on GitHub: https://github.com/1997agarwal/PromptCourt`;
+Playable open source demo on GitHub: https://github.com/1997agarwal/TicTacCourt`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(shareText);

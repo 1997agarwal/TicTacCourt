@@ -1,4 +1,4 @@
-# PromptCourt — Roadmap & Status
+# TicTacCourt — Roadmap & Status
 
 > **Live Status:** v1.0.0 Alpha Active Development
 
