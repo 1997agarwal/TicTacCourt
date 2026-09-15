@@ -119,24 +119,26 @@ export const App: React.FC = () => {
     }, 600);
   }, [winner, apiKey, arbiterPreset]);
 
-  const triggerSuddenDeath = (currentGrid: BoardType) => {
+  const triggerSuddenDeath = (currentGrid: BoardType, currentSize: number): BoardType => {
     soundManager.playGavel();
-    const mutResult = applyMutation(currentGrid, { type: "EXPAND" }, 3);
+    const nextSize = currentSize + 1;
+    const mutResult = applyMutation(currentGrid, { type: "EXPAND" }, currentSize);
     setGrid(mutResult.newGrid);
-    setBoardSize(4);
+    setBoardSize(nextSize);
     setTokens(prev => ({ X: prev.X + 1, O: prev.O + 1 }));
     setLastVerdict({
       status: "SUSTAINED",
       score: 20,
-      rulingTitle: "SUDDEN DEATH: DRAW FORBIDDEN!",
-      reasoning: "The Supreme Court rejects stalemates. Expanding territory to 4x4 + 1 Bonus Objection Token awarded!",
-      dialogue: "A draw is a waste of everyone's time! I hereby invoke the Sudden Death Protocol: The board expands to a 4x4 Grid. First to 4-in-a-row takes the crown!",
+      rulingTitle: `SUDDEN DEATH PROTOCOL: EXPANDED TO ${nextSize}×${nextSize}!`,
+      reasoning: `The Supreme Court forbids stalemates. Expanding territory to ${nextSize}x${nextSize} + 1 Bonus Objection Token awarded!`,
+      dialogue: `A draw is a waste of everyone's time! I hereby invoke the Sudden Death Protocol: The board expands to a ${nextSize}x${nextSize} Grid. First to 4-in-a-row takes the crown!`,
       mutation: { type: "EXPAND" }
     });
     setHistoryLog(prev => [
       ...prev,
-      "⚖️ SUDDEN DEATH ACTIVATED: Stalemate rejected! Board expanded to 4x4 with 4-in-a-row win condition!"
+      `⚖️ SUDDEN DEATH ACTIVATED: Stalemate rejected! Board expanded from ${currentSize}×${currentSize} to ${nextSize}×${nextSize} (+1 token each)!`
     ]);
+    return mutResult.newGrid;
   };
 
   const executeBotMove = (currentGrid: BoardType, size: number) => {
@@ -149,8 +151,8 @@ export const App: React.FC = () => {
       setHistoryLog(prev => [...prev, `Bot placed O on [${r + 1},${c + 1}].`]);
 
       const outcome = checkWinner(updatedGrid, size);
-      if (outcome.winner === "DRAW" && size === 3) {
-        triggerSuddenDeath(updatedGrid);
+      if (outcome.winner === "DRAW") {
+        triggerSuddenDeath(updatedGrid, size);
         setCurrentPlayer("X");
         return;
       }
@@ -181,12 +183,13 @@ export const App: React.FC = () => {
     setHistoryLog(prev => [...prev, logEntry]);
 
     const outcome = checkWinner(updatedGrid, boardSize);
-    if (outcome.winner === "DRAW" && boardSize === 3) {
-      triggerSuddenDeath(updatedGrid);
+    if (outcome.winner === "DRAW") {
+      const nextGrid = triggerSuddenDeath(updatedGrid, boardSize);
+      const nextSize = boardSize + 1;
       const nextPlayer: Player = currentPlayer === "X" ? "O" : "X";
       setCurrentPlayer(nextPlayer);
       if (mode === "PVE" && nextPlayer === "O") {
-        setTimeout(() => executeBotMove(applyMutation(updatedGrid, { type: "EXPAND" }, 3).newGrid, 4), 800);
+        setTimeout(() => executeBotMove(nextGrid, nextSize), 800);
       }
       return;
     }
@@ -262,9 +265,11 @@ export const App: React.FC = () => {
           `Court Verdict SUSTAINED: ${mutResult.message}`,
         ]);
 
-        // Recheck winner in case mutation caused a win
+        // Recheck winner in case mutation caused a win or draw
         const outcome = checkWinner(mutResult.newGrid, mutResult.newSize);
-        if (outcome.winner) {
+        if (outcome.winner === 'DRAW') {
+          triggerSuddenDeath(mutResult.newGrid, mutResult.newSize);
+        } else if (outcome.winner) {
           setWinner(outcome.winner);
           setWinningLine(outcome.line);
           setIsShareCardOpen(true);

@@ -64,10 +64,15 @@ export function applyMutation(
     }
 
     case 'EXPAND': {
-      if (currentSize >= 4) {
-        return { newGrid, newSize: currentSize, extraTurn: false, message: 'Board already at maximum 4x4 expansion!' };
+      if (currentSize >= 8) {
+        return {
+          newGrid,
+          newSize: currentSize,
+          extraTurn: false,
+          message: 'Court is already at maximum expansion capacity!',
+        };
       }
-      const newSize = 4;
+      const newSize = currentSize + 1;
       const expanded: Board = [];
       for (let r = 0; r < newSize; r++) {
         const row: CellState[] = [];
@@ -88,9 +93,9 @@ export function applyMutation(
       }
       return {
         newGrid: expanded,
-        newSize: 4,
+        newSize,
         extraTurn: false,
-        message: 'Court Order: The territory has expanded to a 4x4 Grid!',
+        message: `Court Order: The territory has expanded to a ${newSize}x${newSize} Grid!`,
       };
     }
 
