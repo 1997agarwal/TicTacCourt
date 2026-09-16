@@ -141,6 +141,31 @@ Players who play fast take the upper hand, while hesitant delayers run out of ti
 
 ---
 
+## 📂 Repository Structure
+
+```
+TicTacCourt/
+├── AGENTS.md                 # Product boundaries & architectural constitution
+├── CLAUDE.md                 # CLI commands and developer guidance
+├── ROADMAP.md                # 6-phase strategic development roadmap
+├── CONTRIBUTING.md           # Engineering & community guidelines
+├── LICENSE                   # MIT License
+├── README.md                 # Flagship interactive documentation
+├── SPECIFICATION.md          # Formal game engine specification
+├── package.json              # Project dependencies and test scripts
+├── tests/                    # Deterministic test suite (Mutations, Rules, Arbiter)
+│   ├── gameRules.test.mjs    # Core win/draw logic tests
+│   ├── mockArbiter.test.mjs  # LLM structured response validation
+│   ├── mutations.test.mjs    # Physical board mutation tests
+│   └── timeResistance.test.mjs # Cooldown and clock tests
+└── src/                      # 2026 Clean Light Game Studio
+    ├── ai/                   # AI engines (Gemini Arbiter + Adversary Bot)
+    ├── components/           # UI components (Board, CourtroomModal, ArbiterHUD)
+    └── engine/               # Pure-logic game rules, sounds & board mutations
+```
+
+---
+
 ## 🚀 Quick Start
  
 ### 🌐 Option 1: Play Live in Your Browser (Zero Setup)
