@@ -77,6 +77,13 @@ Switch the presiding judge anytime via the Navbar quick-select or Settings modal
 - 🎭 **The Chaotic Comedian:** Rewards humor, witty rhymes, memes, and sharp trash talk. Overrules dry, boring textbook arguments as snoozefests. Lower bar to sustain ($\ge 11/20$) for hilarious arguments.
 - 🤝 **The Merciful Ref:** Deeply compassionate playground arbiter who roots for the underdog. Dynamically inspects the board; grants bonus points, extra moves, and swaps when a player is on the brink of defeat ($\ge 10/20$ threshold for trailing players).
 
+### 6. ⚡ Time Resistance (Speed Wins & Delay of Game Forfeiture)
+Players who play fast take the upper hand, while hesitant delayers run out of time and lose:
+- **⚡ 7-Second Shot Clock (Default):** Every turn gives 7 seconds. Hesitation triggers an immediate judicial forfeit loss (*"Delay of Game / Time Resistance Default"*).
+- **⏱️ 30-Second Match Bank (Blitz):** Each player starts with 30s total banked time for the entire game. Drains during your turns.
+- **⚡ Velocity Streak Counter:** Consecutive lightning moves ($\le 2.2$s) activate the *Velocity Streak* multiplier.
+- **🛡️ Fair Deliberation Guarantee:** The countdown clock **automatically freezes** while filing Courtroom Objections and during Arbiter deliberations, ensuring players are never penalized for typing persuasive pleas or awaiting Gemini verdicts.
+
 ---
 
 ## 🏗️ System Architecture

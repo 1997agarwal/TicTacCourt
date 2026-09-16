@@ -49,6 +49,8 @@ export interface ArbiterVerdict {
 
 export type GameMode = 'PVE' | 'PVP' | 'SPECTATOR';
 export type CourtPhase = 'IDLE' | 'FILING' | 'REBUTTAL' | 'VERDICT' | 'MUTATING';
+export type TimeMode = 'OFF' | 'SHOT_CLOCK' | 'TIME_BANK';
+export type WinReason = 'LINE' | 'TIMEOUT';
 
 export interface ActiveObjection {
   player: Player;
@@ -64,6 +66,7 @@ export interface GameState {
   grid: Board;
   currentPlayer: Player;
   winner: Player | 'DRAW' | null;
+  winReason?: WinReason | null;
   winningLine: [number, number][] | null;
   tokens: { X: number; O: number };
   courtPhase: CourtPhase;
@@ -73,4 +76,6 @@ export interface GameState {
   extraTurnsRemaining: number;
   mode: GameMode;
   arbiterPreset?: ArbiterPresetId;
+  timeMode?: TimeMode;
+  timeRemaining?: { X: number; O: number };
 }

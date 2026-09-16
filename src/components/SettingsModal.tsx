@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { X, Key, Volume2, VolumeX, ShieldCheck, Check, Sparkles } from 'lucide-react';
+import { X, Key, Volume2, VolumeX, ShieldCheck, Check, Sparkles, Timer } from 'lucide-react';
 import { soundManager } from '../engine/sounds';
-import { ArbiterPresetId } from '../engine/types';
+import { ArbiterPresetId, TimeMode } from '../engine/types';
 import { ARBITER_PRESETS } from '../ai/schemas';
 
 interface SettingsModalProps {
@@ -11,6 +11,8 @@ interface SettingsModalProps {
   onSaveApiKey: (key: string) => void;
   arbiterPreset: ArbiterPresetId;
   onSelectArbiterPreset: (preset: ArbiterPresetId) => void;
+  timeMode: TimeMode;
+  onSelectTimeMode: (mode: TimeMode) => void;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -20,9 +22,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onSaveApiKey,
   arbiterPreset,
   onSelectArbiterPreset,
+  timeMode,
+  onSelectTimeMode,
 }) => {
   const [localKey, setLocalKey] = useState(apiKey);
   const [localPreset, setLocalPreset] = useState<ArbiterPresetId>(arbiterPreset);
+  const [localTimeMode, setLocalTimeMode] = useState<TimeMode>(timeMode);
   const [isMuted, setIsMuted] = useState(soundManager.getMuted());
 
   if (!isOpen) return null;
@@ -31,6 +36,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     e.preventDefault();
     onSaveApiKey(localKey);
     onSelectArbiterPreset(localPreset);
+    onSelectTimeMode(localTimeMode);
     onClose();
   };
 
@@ -104,6 +110,78 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     <p className="text-[11px] text-slate-500 mt-2 pl-9 leading-relaxed border-t border-zinc-100 pt-1.5">
                       {preset.description}
                     </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Time Resistance Mode Selector */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                <Timer className="w-3.5 h-3.5 text-amber-500" />
+                Time Resistance / Speed Clock
+              </label>
+              <span className="text-[11px] text-amber-700 font-medium bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200/60">
+                Speed Wins
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2">
+              {[
+                {
+                  id: 'SHOT_CLOCK' as TimeMode,
+                  name: '7-Second Shot Clock',
+                  emoji: '⚡',
+                  desc: 'Each turn has 7 seconds. Play fast! Hesitation causes instant forfeit on timeout. Pauses during Objections.',
+                  tag: 'Dynamic Rush',
+                },
+                {
+                  id: 'TIME_BANK' as TimeMode,
+                  name: '30-Second Match Bank',
+                  emoji: '⏱️',
+                  desc: '30s total banked time per player for the whole game. Every second thinking drains your bank.',
+                  tag: 'Chess Blitz',
+                },
+                {
+                  id: 'OFF' as TimeMode,
+                  name: 'Casual / Timer Off',
+                  emoji: '⏸️',
+                  desc: 'No ticking timer or timeout forfeiture. Take as much time as you need.',
+                  tag: 'Untimed',
+                },
+              ].map(opt => {
+                const isSelected = localTimeMode === opt.id;
+                return (
+                  <div
+                    key={opt.id}
+                    onClick={() => setLocalTimeMode(opt.id)}
+                    className={`p-3 rounded-2xl cursor-pointer transition-all border text-left ${
+                      isSelected
+                        ? 'border-amber-500 bg-amber-50/50 shadow-sm ring-1 ring-amber-400/40'
+                        : 'border-zinc-200 bg-zinc-50/60 hover:bg-zinc-100/80 hover:border-zinc-300'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className="text-xl leading-none">{opt.emoji}</span>
+                        <div>
+                          <div className="text-xs font-bold text-slate-900 flex items-center gap-2">
+                            <span>{opt.name}</span>
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-200/80 text-slate-700">
+                              {opt.tag}
+                            </span>
+                          </div>
+                          <div className="text-[11px] text-slate-500 mt-0.5">{opt.desc}</div>
+                        </div>
+                      </div>
+                      <div className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5 transition-all ${
+                        isSelected ? 'bg-amber-500 text-white' : 'border border-zinc-300'
+                      }`}>
+                        {isSelected && <Check className="w-3 h-3 stroke-[3]" />}
+                      </div>
+                    </div>
                   </div>
                 );
               })}

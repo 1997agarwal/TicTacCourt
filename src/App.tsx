@@ -8,7 +8,7 @@ import { CourtroomModal } from './components/CourtroomModal';
 import { SettingsModal } from './components/SettingsModal';
 import { VerdictShareCard } from './components/VerdictShareCard';
 
-import { Board as BoardType, Player, GameMode, ArbiterVerdict, ArbiterPresetId } from './engine/types';
+import { Board as BoardType, Player, GameMode, ArbiterVerdict, ArbiterPresetId, TimeMode, WinReason } from './engine/types';
 import { createEmptyBoard, checkWinner, findBestMove, getAvailableCells } from './engine/gameRules';
 import { applyMutation, decrementFrozenCells } from './engine/mutations';
 import { soundManager } from './engine/sounds';
@@ -27,6 +27,19 @@ export const App: React.FC = () => {
   const [lastVerdict, setLastVerdict] = useState<ArbiterVerdict | null>(null);
   const [historyLog, setHistoryLog] = useState<string[]>([]);
   const [extraTurns, setExtraTurns] = useState<number>(0);
+
+  // Time Resistance Speed & Clock States
+  const [timeMode, setTimeMode] = useState<TimeMode>(() => {
+    return (localStorage.getItem('tictaccourt_time_mode') as TimeMode) || 'SHOT_CLOCK';
+  });
+  const [maxTime, setMaxTime] = useState<number>(() => (timeMode === 'TIME_BANK' ? 30 : 7));
+  const [timeRemaining, setTimeRemaining] = useState<{ X: number; O: number }>(() => ({
+    X: timeMode === 'TIME_BANK' ? 30 : 7,
+    O: timeMode === 'TIME_BANK' ? 30 : 7,
+  }));
+  const [winReason, setWinReason] = useState<WinReason | null>(null);
+  const [velocityStreak, setVelocityStreak] = useState<{ player: Player; count: number } | null>(null);
+  const [turnStartTime, setTurnStartTime] = useState<number>(() => Date.now());
 
   // Modals & UI States
   const [isCourtroomOpen, setIsCourtroomOpen] = useState(false);
@@ -48,8 +61,32 @@ export const App: React.FC = () => {
     setLastVerdict(null);
     setExtraTurns(0);
     setIsShareCardOpen(false);
-    setHistoryLog(['Match initialized. 3x3 territory ready.']);
-  }, []);
+    setWinReason(null);
+    setVelocityStreak(null);
+    const mTime = timeMode === 'TIME_BANK' ? 30 : 7;
+    setTimeRemaining({ X: mTime, O: mTime });
+    setTurnStartTime(Date.now());
+    setHistoryLog(['Match initialized. Territory ready.']);
+  }, [timeMode]);
+
+  const handleSelectTimeMode = (mode: TimeMode) => {
+    setTimeMode(mode);
+    localStorage.setItem('tictaccourt_time_mode', mode);
+    const mTime = mode === 'TIME_BANK' ? 30 : 7;
+    setMaxTime(mTime);
+    setTimeRemaining({ X: mTime, O: mTime });
+    setTurnStartTime(Date.now());
+    setHistoryLog(prev => [
+      ...prev,
+      `⏱️ Time Resistance set to ${mode === 'SHOT_CLOCK' ? '⚡ 7s Shot Clock' : mode === 'TIME_BANK' ? '⏱️ 30s Blitz Bank' : '⏸️ Off'}.`
+    ]);
+  };
+
+  const cycleTimeMode = () => {
+    const nextMode: TimeMode =
+      timeMode === 'SHOT_CLOCK' ? 'TIME_BANK' : timeMode === 'TIME_BANK' ? 'OFF' : 'SHOT_CLOCK';
+    handleSelectTimeMode(nextMode);
+  };
 
   const handleSaveApiKey = (key: string) => {
     setApiKey(key);
@@ -65,6 +102,51 @@ export const App: React.FC = () => {
       `⚖️ Presiding Judge changed to ${p.emoji} ${p.name} (Threshold: ≥${p.threshold}/20).`
     ]);
   };
+
+  // Time Resistance Countdown Loop
+  useEffect(() => {
+    if (timeMode === 'OFF' || winner || isDeliberating || isCourtroomOpen) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setTimeRemaining(prev => {
+        const current = prev[currentPlayer];
+        const nextTime = Math.max(0, Number((current - 0.1).toFixed(1)));
+
+        // Audio tick when countdown is critical (<= 3s)
+        if (nextTime <= 3.05 && nextTime > 0.05 && Math.abs(Math.round(nextTime) - nextTime) < 0.06) {
+          soundManager.playTick();
+        }
+
+        if (nextTime <= 0) {
+          // Timeout! Forfeit turn and match
+          const victor: Player = currentPlayer === 'X' ? 'O' : 'X';
+          setWinner(victor);
+          setWinReason('TIMEOUT');
+          setIsShareCardOpen(true);
+          soundManager.playTimeout();
+          setLastVerdict({
+            status: 'OVERRULED',
+            score: 0,
+            rulingTitle: 'DEFAULT JUDGMENT: TIME EXHAUSTED!',
+            reasoning: `Player ${currentPlayer} ran out of time under the Supreme Arbiter's Time Resistance mandate.`,
+            dialogue: `Contempt of Court! Player ${currentPlayer} hesitated too long and lost on the clock. Victory awarded to Player ${victor} by Time Resistance Default!`,
+            mutation: { type: 'NONE' },
+          });
+          setHistoryLog(prevLog => [
+            ...prevLog,
+            `⏱️ TIME EXPIRED: Player ${currentPlayer} timed out! Player ${victor} wins by Time Resistance!`
+          ]);
+          return { ...prev, [currentPlayer]: 0 };
+        }
+
+        return { ...prev, [currentPlayer]: nextTime };
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [timeMode, winner, isDeliberating, isCourtroomOpen, currentPlayer]);
 
   // Bot Turn Handler in PvE
   const triggerBotTurn = useCallback((currentGrid: BoardType, currentTokens: { X: number; O: number }, size: number) => {
@@ -154,10 +236,15 @@ export const App: React.FC = () => {
       if (outcome.winner === "DRAW") {
         triggerSuddenDeath(updatedGrid, size);
         setCurrentPlayer("X");
+        if (timeMode === 'SHOT_CLOCK') {
+          setTimeRemaining(prev => ({ ...prev, X: 7, O: 7 }));
+        }
+        setTurnStartTime(Date.now());
         return;
       }
       if (outcome.winner) {
         setWinner(outcome.winner);
+        setWinReason('LINE');
         setWinningLine(outcome.line);
         setIsShareCardOpen(true);
         if (outcome.winner === 'O') {
@@ -165,6 +252,10 @@ export const App: React.FC = () => {
         }
       } else {
         setCurrentPlayer('X');
+        if (timeMode === 'SHOT_CLOCK') {
+          setTimeRemaining(prev => ({ ...prev, X: 7, O: 7 }));
+        }
+        setTurnStartTime(Date.now());
       }
     }
   };
@@ -173,6 +264,17 @@ export const App: React.FC = () => {
   const handleCellClick = (r: number, c: number) => {
     if (winner || isDeliberating) return;
     if (grid[r][c].player || grid[r][c].isBlocked || grid[r][c].frozenTurns > 0) return;
+
+    // Move speed measurement for Velocity Streak
+    const moveDuration = (Date.now() - turnStartTime) / 1000;
+    if (moveDuration <= 2.2) {
+      setVelocityStreak(prev => ({
+        player: currentPlayer,
+        count: prev && prev.player === currentPlayer ? prev.count + 1 : 1,
+      }));
+    } else {
+      setVelocityStreak(null);
+    }
 
     soundManager.playClick();
     const updatedGrid = decrementFrozenCells(grid);
@@ -188,6 +290,10 @@ export const App: React.FC = () => {
       const nextSize = boardSize + 1;
       const nextPlayer: Player = currentPlayer === "X" ? "O" : "X";
       setCurrentPlayer(nextPlayer);
+      if (timeMode === 'SHOT_CLOCK') {
+        setTimeRemaining(prev => ({ ...prev, X: 7, O: 7 }));
+      }
+      setTurnStartTime(Date.now());
       if (mode === "PVE" && nextPlayer === "O") {
         setTimeout(() => executeBotMove(nextGrid, nextSize), 800);
       }
@@ -195,6 +301,7 @@ export const App: React.FC = () => {
     }
     if (outcome.winner) {
       setWinner(outcome.winner);
+      setWinReason('LINE');
       setWinningLine(outcome.line);
       setIsShareCardOpen(true);
       if (outcome.winner !== 'DRAW') {
@@ -208,12 +315,20 @@ export const App: React.FC = () => {
     if (extraTurns > 0) {
       setExtraTurns(prev => prev - 1);
       setHistoryLog(prev => [...prev, `Player ${currentPlayer} uses their granted consecutive move!`]);
+      if (timeMode === 'SHOT_CLOCK') {
+        setTimeRemaining(prev => ({ ...prev, [currentPlayer]: 7 }));
+      }
+      setTurnStartTime(Date.now());
       return;
     }
 
     // Next player
     const nextPlayer: Player = currentPlayer === 'X' ? 'O' : 'X';
     setCurrentPlayer(nextPlayer);
+    if (timeMode === 'SHOT_CLOCK') {
+      setTimeRemaining(prev => ({ ...prev, X: 7, O: 7 }));
+    }
+    setTurnStartTime(Date.now());
 
     // If PvE and next is O, trigger Bot turn
     if (mode === 'PVE' && nextPlayer === 'O') {
@@ -271,6 +386,7 @@ export const App: React.FC = () => {
           triggerSuddenDeath(mutResult.newGrid, mutResult.newSize);
         } else if (outcome.winner) {
           setWinner(outcome.winner);
+          setWinReason('LINE');
           setWinningLine(outcome.line);
           setIsShareCardOpen(true);
           triggerConfetti();
@@ -286,6 +402,7 @@ export const App: React.FC = () => {
       console.error('Error in plea deliberation:', err);
     } finally {
       setIsDeliberating(false);
+      setTurnStartTime(Date.now());
     }
   };
 
@@ -316,6 +433,8 @@ export const App: React.FC = () => {
         onOpenSettings={() => setIsSettingsOpen(true)}
         arbiterPreset={arbiterPreset}
         onSelectArbiterPreset={handleSelectArbiterPreset}
+        timeMode={timeMode}
+        onToggleTimeMode={cycleTimeMode}
       />
 
       <main className="max-w-4xl mx-auto px-4 py-8 w-full flex flex-col gap-6">
@@ -325,6 +444,10 @@ export const App: React.FC = () => {
           tokens={tokens}
           onCallObjection={() => setIsCourtroomOpen(true)}
           disabled={Boolean(winner) || isDeliberating || (mode === 'PVE' && currentPlayer === 'O')}
+          timeMode={timeMode}
+          timeRemaining={timeRemaining}
+          maxTime={maxTime}
+          velocityStreak={velocityStreak}
         />
 
         {/* Main Tactical Arena & Referee HUD */}
@@ -386,12 +509,15 @@ export const App: React.FC = () => {
         onSaveApiKey={handleSaveApiKey}
         arbiterPreset={arbiterPreset}
         onSelectArbiterPreset={handleSelectArbiterPreset}
+        timeMode={timeMode}
+        onSelectTimeMode={handleSelectTimeMode}
       />
 
       <VerdictShareCard
         isOpen={isShareCardOpen}
         winner={winner}
         lastVerdict={lastVerdict}
+        winReason={winReason}
         onPlayAgain={() => resetMatch(boardSize)}
       />
     </div>

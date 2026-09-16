@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Gavel, RotateCcw, Settings, Github, Swords, Users, Bot, ChevronDown, Check } from 'lucide-react';
-import { GameMode, ArbiterPresetId } from '../engine/types';
+import { Gavel, RotateCcw, Settings, Github, Swords, Users, Bot, ChevronDown, Check, Timer } from 'lucide-react';
+import { GameMode, ArbiterPresetId, TimeMode } from '../engine/types';
 import { ARBITER_PRESETS } from '../ai/schemas';
 
 interface NavbarProps {
@@ -10,6 +10,8 @@ interface NavbarProps {
   onOpenSettings: () => void;
   arbiterPreset: ArbiterPresetId;
   onSelectArbiterPreset: (preset: ArbiterPresetId) => void;
+  timeMode: TimeMode;
+  onToggleTimeMode: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -19,6 +21,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenSettings,
   arbiterPreset,
   onSelectArbiterPreset,
+  timeMode,
+  onToggleTimeMode,
 }) => {
   const [isPresetDropdownOpen, setIsPresetDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -151,6 +155,27 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             )}
           </div>
+
+          {/* Time Resistance Quick Toggle */}
+          <button
+            onClick={onToggleTimeMode}
+            title="Toggle Time Resistance (Shot Clock / Time Bank / Off)"
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border text-xs font-semibold transition-all shadow-sm ${
+              timeMode === 'SHOT_CLOCK'
+                ? 'bg-amber-500/10 border-amber-300 text-amber-900'
+                : timeMode === 'TIME_BANK'
+                ? 'bg-blue-500/10 border-blue-300 text-blue-900'
+                : 'bg-zinc-50 border-zinc-200 text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Timer className={`w-3.5 h-3.5 ${timeMode !== 'OFF' ? 'text-amber-600 animate-pulse' : 'text-slate-400'}`} />
+            <span className="hidden md:inline">
+              {timeMode === 'SHOT_CLOCK' ? '7s Shot Clock' : timeMode === 'TIME_BANK' ? '30s Bank' : 'Timer Off'}
+            </span>
+            <span className="md:hidden font-mono text-[11px]">
+              {timeMode === 'SHOT_CLOCK' ? '7s' : timeMode === 'TIME_BANK' ? '30s' : 'Off'}
+            </span>
+          </button>
         </div>
 
         {/* Quick Actions */}
