@@ -5,10 +5,11 @@
 </p>
 
 <p align="center">
-  <a href="https://1997agarwal.github.io/TicTacCourt"><img src="https://img.shields.io/badge/▶_Play_Live_Demo-TicTacCourt-FF5722?style=for-the-badge&logo=githubpages&logoColor=white" alt="Play Live Demo"></a>
+  <a href="https://1997agarwal.github.io/TicTacCourt"><img src="https://img.shields.io/badge/Live_Demo-Play_TicTacCourt-success?style=for-the-badge&logo=githubpages&logoColor=white" alt="Live Demo"></a>
 </p>
 
 <p align="center">
+  <a href="https://1997agarwal.github.io/TicTacCourt"><img src="https://img.shields.io/badge/Live_Demo-Online-brightgreen.svg?logo=githubpages&logoColor=white" alt="Live Demo"></a>
   <a href="#license"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License MIT"></a>
   <a href="#the-zero-draw-guarantee"><img src="https://img.shields.io/badge/Draws-100%25_Eliminated-emerald.svg" alt="Zero Draws"></a>
   <a href="#system-architecture"><img src="https://img.shields.io/badge/Architecture-Autonomous_Tool_Calling-orange.svg" alt="Tool Calling Architecture"></a>
@@ -134,6 +135,13 @@ Switch the presiding judge anytime via the Navbar quick-select or Settings modal
 ---
 
 ## 🚀 Quick Start
+ 
+### 🌐 Option 1: Play Live in Your Browser (Zero Setup)
+Play instantly online: **[https://1997agarwal.github.io/TicTacCourt](https://1997agarwal.github.io/TicTacCourt)**
+
+---
+
+### 💻 Option 2: Run Locally (Developer Mode)
 
 ### 1. Launch the 2026 Light Theme Studio
 ```bash
