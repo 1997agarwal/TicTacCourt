@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gavel, Trophy, Share2, Copy, Check, RotateCcw, Timer } from 'lucide-react';
+import { Gavel, Trophy, Share2, Copy, Check, RotateCcw, Timer, FileText, Download } from 'lucide-react';
 import { ArbiterVerdict, Player, WinReason } from '../engine/types';
 
 interface VerdictShareCardProps {
@@ -7,6 +7,8 @@ interface VerdictShareCardProps {
   winner: Player | 'DRAW' | null;
   lastVerdict: ArbiterVerdict | null;
   winReason?: WinReason | null;
+  historyLog?: string[];
+  boardSize?: number;
   onPlayAgain: () => void;
 }
 
@@ -15,9 +17,12 @@ export const VerdictShareCard: React.FC<VerdictShareCardProps> = ({
   winner,
   lastVerdict,
   winReason,
+  historyLog = [],
+  boardSize = 3,
   onPlayAgain,
 }) => {
   const [copied, setCopied] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
 
   if (!isOpen || !winner) return null;
 
@@ -32,6 +37,41 @@ Playable live demo: https://1997agarwal.github.io/TicTacCourt`;
     navigator.clipboard.writeText(shareText);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleDownloadTranscript = () => {
+    const docketId = `TCC-${Date.now().toString().slice(-6)}`;
+    const outcomeText = winner === 'DRAW' ? 'Stalemate Dismissal' : isTimeoutWin ? `Forfeit Judgment for Player ${winner} (Opponent Timed Out)` : `Judgment Rendered in Favor of Player ${winner}`;
+    
+    const transcriptContent = `# 🏛️ Supreme Court of TicTacCourt: Official Case Record
+> **Docket Case Number:** ${docketId}  
+> **Final Ruling:** ${outcomeText}  
+> **Territory Dimensions:** ${boardSize}×${boardSize} Grid (Cascading Sudden Death)  
+> **Supreme Arbiter Gavel:** "${lastVerdict?.dialogue || 'Court has reached final adjournment.'}"  
+> **Live Arena Reference:** https://1997agarwal.github.io/TicTacCourt  
+
+---
+
+## ⚖️ Official Stenographer Trial Log
+${historyLog.map((entry, idx) => `[Entry #${String(idx + 1).padStart(2, '0')}] ${entry}`).join('\n')}
+
+---
+*Certified authentic and sealed by the Supreme AI Arbiter of TicTacCourt.*
+*Play and persuade the referee at: https://1997agarwal.github.io/TicTacCourt*
+`;
+
+    const blob = new Blob([transcriptContent], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `tictaccourt-transcript-${docketId.toLowerCase()}.md`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setDownloaded(true);
+    setTimeout(() => setDownloaded(false), 2000);
   };
 
   return (
@@ -72,20 +112,40 @@ Playable live demo: https://1997agarwal.github.io/TicTacCourt`;
         )}
 
         {/* Action Buttons */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
+        <div className="mt-6 flex flex-col gap-2.5">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={onPlayAgain}
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-sm active:scale-95"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Play Rematch
+            </button>
+            <button
+              onClick={handleCopy}
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-bold text-sm hover:bg-amber-200 transition-all shadow-sm active:scale-95"
+            >
+              {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+              {copied ? 'Copied Card!' : 'Share Result'}
+            </button>
+          </div>
+
           <button
-            onClick={onPlayAgain}
-            className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-sm active:scale-95"
+            onClick={handleDownloadTranscript}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 text-slate-700 font-semibold text-xs border border-slate-200 transition active:scale-95"
+            title="Download full stenographer transcript of objections, rulings, and board mutations"
           >
-            <RotateCcw className="w-4 h-4" />
-            Play Rematch
-          </button>
-          <button
-            onClick={handleCopy}
-            className="w-full flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-100 text-amber-900 border border-amber-300 font-bold text-sm hover:bg-amber-200 transition-all shadow-sm active:scale-95"
-          >
-            {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-            {copied ? 'Copied Card!' : 'Share Result'}
+            {downloaded ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-700 font-bold">Transcript Downloaded!</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-3.5 h-3.5 text-slate-500" />
+                <span>Download Stenographer Record (.md)</span>
+              </>
+            )}
           </button>
         </div>
       </div>

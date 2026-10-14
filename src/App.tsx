@@ -518,6 +518,8 @@ export const App: React.FC = () => {
         winner={winner}
         lastVerdict={lastVerdict}
         winReason={winReason}
+        historyLog={historyLog}
+        boardSize={boardSize}
         onPlayAgain={() => resetMatch(boardSize)}
       />
     </div>
